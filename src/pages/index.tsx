@@ -1,23 +1,76 @@
-import { styled } from '../styles'
-
-const Button = styled('button', {
-  backgroundColor: '$GREEN300',
-  color: 'white',
-  padding: '10px 40px',
-  border: 'none',
-  borderRadius: '5px',
-  cursor: 'pointer',
-  '&:hover': {
-    backgroundColor: '$GREEN500'
-  }
-})
+import Image from 'next/image'
+import { HomeContainer, Product } from '../styles/pages/home'
+import { useKeenSlider } from 'keen-slider/react'
+import 'keen-slider/keen-slider.min.css'
+import camiseta1 from '../assets/1.png'
+import camiseta2 from '../assets/2.png'
+import camiseta3 from '../assets/3.png'
+import camiseta4 from '../assets/4.png'
 
 export default function Home() {
+  const [sliderRef] = useKeenSlider({
+    slides: {
+      perView: 2.7,
+      spacing: 48
+    }
+  })
+
   return (
-    <>
-      <h1>Hello World</h1>
-      <Button>Texte</Button>
-    </>
+    <HomeContainer
+      ref={sliderRef}
+      className='keen-slider'>
+      <Product className='keen-slider__slide'>
+        <Image
+          src={camiseta1}
+          width={520}
+          height={480}
+          alt=''
+        />
+        <footer>
+          <strong>Camiseta X</strong>
+          <span>R$ 79,90</span>
+        </footer>
+      </Product>
+
+      <Product className='keen-slider__slide'>
+        <Image
+          src={camiseta2}
+          width={520}
+          height={480}
+          alt=''
+        />
+        <footer>
+          <strong>Camiseta X</strong>
+          <span>R$ 79,90</span>
+        </footer>
+      </Product>
+
+      <Product className='keen-slider__slide'>
+        <Image
+          src={camiseta3}
+          width={520}
+          height={480}
+          alt=''
+        />
+        <footer>
+          <strong>Camiseta X</strong>
+          <span>R$ 79,90</span>
+        </footer>
+      </Product>
+
+      <Product className='keen-slider__slide'>
+        <Image
+          src={camiseta4}
+          width={520}
+          height={480}
+          alt=''
+        />
+        <footer>
+          <strong>Camiseta X</strong>
+          <span>R$ 79,90</span>
+        </footer>
+      </Product>
+    </HomeContainer>
   )
 }
 
