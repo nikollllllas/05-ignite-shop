@@ -6,8 +6,9 @@ import {
 } from '@/src/styles/pages/product'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Image from 'next/image'
-import { useRouter } from 'next/router'
 import Stripe from 'stripe'
+import axios from 'axios'
+import { useState } from 'react'
 
 interface ProductProps {
   product: {
@@ -16,14 +17,30 @@ interface ProductProps {
     imageUrl: string
     price: string
     description: string
+    defaultPriceId: string
   }
 }
 
 export default function Product({ product }: ProductProps) {
-  const { isFallback } = useRouter()
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
+    useState(false)
 
-  if (isFallback) {
-    return <h1>Carregando...</h1>
+  async function handleBuyShirt() {
+    try {
+      setIsCreatingCheckoutSession(true)
+
+      const res = await axios.post('/api/checkout', {
+        priceId: product.defaultPriceId
+      })
+
+      const { checkoutUrl } = res.data
+
+      window.location.href = checkoutUrl
+    } catch (err) {
+      setIsCreatingCheckoutSession(false)
+
+      alert('Falha ao redirecionar ao checkout!')
+    }
   }
 
   return (
@@ -43,7 +60,7 @@ export default function Product({ product }: ProductProps) {
 
         <p>{product.description}</p>
 
-        <button>Comprar agora</button>
+        <button onClick={handleBuyShirt} disabled={isCreatingCheckoutSession}>Comprar agora</button>
       </ProductDetails>
     </ProductContainer>
   )
@@ -51,7 +68,7 @@ export default function Product({ product }: ProductProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths: [{ params: { id: 'prod_PuBRVnSG8BoVl1' }     }],
+    paths: [{ params: { id: 'prod_PuBRVnSG8BoVl1' } }],
     fallback: true
   }
 }
@@ -77,7 +94,8 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
           style: 'currency',
           currency: 'BRL'
         }).format(price.unit_amount! / 100),
-        description: product.description
+        description: product.description,
+        defaultPriceId: price.id
       }
     },
     revalidate: 60 * 60 * 1

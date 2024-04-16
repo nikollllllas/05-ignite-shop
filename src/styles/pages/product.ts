@@ -1,3 +1,4 @@
+import { cursorTo } from 'readline'
 import { styled } from '..'
 
 export const ProductContainer = styled('main', {
@@ -62,7 +63,12 @@ export const ProductDetails = styled('div', {
     fontSize: '$md',
     transition: '0.2s ease-in-out',
 
-    '&:hover': {
+    '&:disabled': {
+      opacity: 0.7,
+      cursor: 'not-allowed'
+    },
+
+    '&:not(:disabled):hover': {
       backgroundColor: '$GREEN300'
     }
   }
